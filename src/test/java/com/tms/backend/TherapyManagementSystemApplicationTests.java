@@ -1,4 +1,4 @@
-package com.example.Therapy.Management.System;
+package com.tms.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
