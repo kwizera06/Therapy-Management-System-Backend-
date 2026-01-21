@@ -22,9 +22,14 @@ import com.tms.backend.security.AuthEntryPointJwt;
 import com.tms.backend.security.AuthTokenFilter;
 import com.tms.backend.security.UserDetailsServiceImpl;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
+  @Value("${app.frontend.url:http://localhost:5173}")
+  private String frontendUrl;
+
   @Autowired
   UserDetailsServiceImpl userDetailsService;
 
@@ -81,7 +86,7 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
       CorsConfiguration configuration = new CorsConfiguration();
-      configuration.setAllowedOrigins(Arrays.asList("https://therapyolivier.netlify.app/")); // Restrict to specific frontend URL
+      configuration.setAllowedOrigins(Arrays.asList(frontendUrl)); // Use configured frontend URL
       configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
       configuration.setAllowedHeaders(Arrays.asList("*"));
       configuration.setAllowCredentials(true);
