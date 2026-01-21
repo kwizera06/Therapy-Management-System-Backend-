@@ -13,6 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
 
 import com.tms.backend.security.AuthEntryPointJwt;
 import com.tms.backend.security.AuthTokenFilter;
@@ -58,6 +62,7 @@ public class SecurityConfig {
         .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .securityContext(securityContext -> securityContext.requireExplicitSave(false))
+        .cors(org.springframework.security.config.Customizer.withDefaults())
         .authorizeHttpRequests(auth -> 
           auth.requestMatchers("/api/auth/**").permitAll()
               .requestMatchers("/api/test/**").permitAll()
@@ -71,5 +76,18 @@ public class SecurityConfig {
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     
     return http.build();
+  }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+      CorsConfiguration configuration = new CorsConfiguration();
+      configuration.setAllowedOrigins(Arrays.asList("https://therapyolivier.netlify.app/")); // Restrict to specific frontend URL
+      configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+      configuration.setAllowedHeaders(Arrays.asList("*"));
+      configuration.setAllowCredentials(true);
+      
+      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+      source.registerCorsConfiguration("/**", configuration);
+      return source;
   }
 }
